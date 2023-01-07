@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kube-tracker-config
+  namespace: default
+data:
+  .kube-tracker.yaml: |
+    resources:
+    - namespace: kube-system
+      kinds:
+      - daemonset
+      - deployment
+      - statefulset
+      - service
+      - role
+      - rolebinding
+    - namespace: default
+      kinds:
+      - pod
+      - deployment
+      - service
+    - kinds:
+      - node
+      - clusterrole
+      - clusterrolebinding

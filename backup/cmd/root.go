@@ -76,7 +76,10 @@ var rootCmd = &cobra.Command{
 			}
 			command.Stderr = &commandStdErr
 			command.Stdout = &commandStdOut
-			command.Run()
+			err := command.Run()
+			if err != nil {
+				log.Println(commandStdErr.String())
+			}
 			writeToFile(commandStdOut.String(), path.Join(outputdir, fileName, "summary"))
 			// fmt.Println(commandStdOut.String())
 		}

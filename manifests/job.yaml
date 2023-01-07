@@ -1,0 +1,46 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  generateName: kube-tracker-ondemand-
+  namespace: default
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      serviceAccountName: kube-tracker-sa
+      automountServiceAccountToken: true
+      containers:
+      - name: kube-tracker
+        image: kube-tracker:v0.0.1
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: KTRACKERCONFIG
+          value: "/app/config/.kube-tracker.yaml"
+        - name: KTRACKERDIR
+          value: docker-desktop
+        - name: KTRACKERREPO
+          value: git@github.com:sp-yduck/kube-tracker.git
+        - name: GITUSER
+          value: kube-tracker
+        - name: GITEMAIL
+          value: kube-tracker@kube-tracker.com
+        args:
+        - "sh"
+        - "-c"
+        - "/app/entrypoint.sh"
+        # - "sleep 360"
+        volumeMounts:
+          - name: config
+            mountPath: "/app/config/"
+            readOnly: true
+          - name: ssh-key
+            mountPath: "/app/.ssh/"
+            readOnly: true
+      volumes:
+        - name: config
+          configMap:
+            name: kube-tracker-config
+        - name: ssh-key
+          secret:
+            secretName: github-ssh-auth
+            defaultMode: 0400

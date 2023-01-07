@@ -12,8 +12,8 @@ RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.26.0/b
 RUN chmod +x ./kubectl
 RUN mv ./kubectl /usr/local/bin/kubectl
 RUN apk add openssh git
-# RUN echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
 COPY --from=gobuilder /usr/local/bin/ /usr/local/bin/
-WORKDIR /root/
-COPY entrypoint.sh /root/entrypoint.sh
-# ENTRYPOINT [ "/root/enrypoint.sh" ]
+COPY .gitconfig /root/.ssh/config
+WORKDIR /app/
+COPY entrypoint.sh /app/entrypoint.sh
+# ENTRYPOINT [ "sh", "-c", "/app/entrypoint.sh" ]
